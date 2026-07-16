@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-butter-50 text-forest-900 font-sans antialiased;
+}
+
+/* Thin, on-brand scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-forest-200 rounded-full;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-forest-100/60;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition
+      focus:outline-none focus:ring-2 focus:ring-forest-300 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-forest-700 text-butter-100 hover:bg-forest-800;
+  }
+  .btn-ghost {
+    @apply btn bg-butter-200 text-forest-800 hover:bg-butter-300;
+  }
+  .input {
+    @apply w-full rounded-xl border border-forest-200 bg-white px-3 py-2 text-sm
+      focus:outline-none focus:ring-2 focus:ring-forest-300;
+  }
+  .th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-forest-300;
+  }
+  .td {
+    @apply px-4 py-3 text-sm text-forest-800 whitespace-nowrap;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+}

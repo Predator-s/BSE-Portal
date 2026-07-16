@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>BSE Portal — User Manual</title>
+    <style>
+      :root {
+        --forest: #013e37;
+        --forest-800: #01302b;
+        --forest-300: #5f8a83;
+        --forest-100: #cfe0dd;
+        --butter: #ffefb3;
+        --butter-100: #fffae6;
+        --butter-50: #fffdf5;
+        --ink: #14312c;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        color: var(--ink);
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+      @page { size: A4; margin: 16mm 14mm; }
+
+      h1, h2, h3 { color: var(--forest); line-height: 1.2; }
+      h2 {
+        font-size: 20px;
+        margin: 0 0 4px;
+        padding-bottom: 6px;
+        border-bottom: 3px solid var(--butter);
+      }
+      h3 { font-size: 14px; margin: 16px 0 4px; }
+      p { margin: 6px 0; }
+      code {
+        background: var(--butter-100);
+        border: 1px solid var(--forest-100);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+        font-size: 11px;
+        color: var(--forest-800);
+      }
+      pre {
+        background: var(--forest);
+        color: var(--butter-100);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+        font-size: 10.5px;
+        line-height: 1.5;
+        overflow: hidden;
+        white-space: pre-wrap;
+      }
+      .muted { color: var(--forest-300); }
+      .section { page-break-before: always; padding-top: 4px; }
+      .lead { font-size: 12.5px; }
+
+      /* Cover */
+      .cover {
+        height: 247mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: var(--forest);
+        color: var(--butter-100);
+        border-radius: 18px;
+        padding: 26mm 22mm;
+        margin: -4mm 0 0;
+      }
+      .cover .brand { display: flex; align-items: center; gap: 12px; }
+      .logo {
+        width: 46px; height: 46px; border-radius: 12px;
+        background: var(--butter); color: var(--forest);
+        display: grid; place-items: center; font-size: 26px; font-weight: 800;
+      }
+      .cover h1 { color: var(--butter-100); font-size: 44px; margin: 0; }
+      .cover .sub { color: #bcd; font-size: 16px; }
+      .swatches { display: flex; gap: 10px; align-items: center; }
+      .swatch { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #bcd; }
+      .dot { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,.25); }
+
+      /* Figures */
+      figure { margin: 12px 0; page-break-inside: avoid; }
+      figure img {
+        width: 100%;
+        border: 1px solid var(--forest-100);
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(1,62,55,.12);
+      }
+      figcaption {
+        font-size: 10.5px; color: var(--forest-300);
+        margin-top: 5px; text-align: center;
+      }
+
+      /* Callouts */
+      .note {
+        background: var(--butter-50);
+        border: 1px solid var(--forest-100);
+        border-left: 4px solid var(--butter);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin: 10px 0;
+      }
+      .note b { color: var(--forest); }
+
+      /* Tables */
+      table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 11px; }
+      th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--forest-100); vertical-align: top; }
+      th { color: var(--forest-300); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+      .chip {
+        display: inline-block; border-radius: 999px; padding: 1px 8px;
+        font-size: 10px; font-weight: 700;
+      }
+      .chip.all { background: var(--forest); color: var(--butter-100); }
+      .chip.own { background: var(--butter); color: var(--forest-800); }
+      .chip.mapped { background: var(--forest-100); color: var(--forest); }
+
+      .toc li { margin: 3px 0; }
+      .toc .num { color: var(--butter); font-weight: 800; margin-right: 8px; }
+      ul { margin: 6px 0; padding-left: 18px; }
+      li { margin: 2px 0; }
+      .step { display: flex; gap: 10px; margin: 8px 0; page-break-inside: avoid; }
+      .step .n {
+        flex: 0 0 22px; height: 22px; border-radius: 999px;
+        background: var(--forest); color: var(--butter-100);
+        display: grid; place-items: center; font-weight: 800; font-size: 11px;
+      }
+      .kpi-row { display: flex; gap: 8px; }
+      .kpi { flex: 1; border: 1px solid var(--forest-100); border-radius: 8px; padding: 8px; }
+      .kpi .l { font-size: 9.5px; text-transform: uppercase; color: var(--forest-300); letter-spacing:.04em; }
+      .kpi .v { font-size: 15px; font-weight: 800; color: var(--forest); }
+      .diagram { width: 100%; margin: 8px 0; }
+    </style>
+  </head>
+  <body>
+    <!-- ─────────────── COVER ─────────────── -->
+    <div class="cover">
+      <div class="brand">
+        <div class="logo">🏛</div>
+        <div>
+          <div style="font-weight:800; font-size:18px;">BSE Portal</div>
+          <div class="sub">Internal Operations</div>
+        </div>
+      </div>
+      <div>
+        <div class="sub" style="letter-spacing:.2em; text-transform:uppercase; font-size:12px;">User Manual &amp; Workflow Guide</div>
+        <h1>How the portal works,<br />screen by screen.</h1>
+        <p class="sub" style="max-width:120mm;">
+          A stock-broking operations portal that stays instant even when the exchange feed is slow or down —
+          with live updates and fully dynamic, per-organisation access control.
+        </p>
+      </div>
+      <div>
+        <div class="swatches">
+          <span class="swatch"><span class="dot" style="background:#ffefb3"></span> Butter #ffefb3</span>
+          <span class="swatch"><span class="dot" style="background:#013e37"></span> Forest #013e37</span>
+        </div>
+        <p class="sub" style="margin-top:14px; font-size:11px;">Part A — Mock BSE API &nbsp;·&nbsp; Part B — Internal Portal &nbsp;·&nbsp; v1.0 &nbsp;·&nbsp; 16 Jul 2026</p>
+      </div>
+    </div>
+
+    <!-- ─────────────── CONTENTS ─────────────── -->
+    <div class="section">
+      <h2>Contents</h2>
+      <ol class="toc" style="list-style:none; padding-left:0; font-size:13px;">
+        <li><span class="num">1</span> What BSE Portal is</li>
+        <li><span class="num">2</span> How it works — the workflow</li>
+        <li><span class="num">3</span> Getting started (setup)</li>
+        <li><span class="num">4</span> Signing in &amp; roles</li>
+        <li><span class="num">5</span> The screens — a guided tour</li>
+        <li><span class="num">6</span> Access Control — dynamic RBAC</li>
+        <li><span class="num">7</span> Staying fast &amp; live under a failing feed</li>
+        <li><span class="num">8</span> Reference — ports, accounts, config</li>
+      </ol>
+
+      <h2 style="margin-top:26px;">1 · What BSE Portal is</h2>
+      <p class="lead">
+        BSE Portal is an internal web application for a stock-broking firm. It brings together two very
+        different data sources and presents them to staff through role-appropriate screens:
+      </p>
+      <ul>
+        <li><b>The BSE exchange feed</b> — client master data and trade records. In the real world this feed is
+          <i>painful</i>: a full pull takes 5–10 minutes, the network kills any request after 30 seconds, and
+          roughly one pull in five fails partway through. Part A of this project (<b>Mock BSE API</b>) faithfully
+          simulates that behaviour.</li>
+        <li><b>The firm's internal application</b> — employees and the employee ↔ client mapping (which
+          relationship manager looks after which client). This source is fast and reliable.</li>
+      </ul>
+      <p>
+        From BSE trades combined with the internal mappings, the portal computes <b>relationship-manager
+        incentives</b> (a percentage of the brokerage earned on a manager's mapped clients' trades).
+      </p>
+      <div class="note">
+        <b>The promise.</b> Every screen loads in under a second — even if BSE is completely down — and open
+        screens update on their own when fresh data arrives. No manual refresh, ever.
+      </div>
+    </div>
+
+    <!-- ─────────────── WORKFLOW ─────────────── -->
+    <div class="section">
+      <h2>2 · How it works — the workflow</h2>
+      <p class="lead">
+        The trick behind the promise is a clean split: <b>ingestion</b> and <b>serving</b> never touch each
+        other. A background worker slowly mirrors BSE into our own database; the portal only ever reads that
+        database. So the slow, unreliable feed can never make a screen slow or unavailable.
+      </p>
+
+      <svg class="diagram" viewBox="0 0 1000 430" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+        <defs>
+          <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L7,3 L0,6 Z" fill="#013e37" />
+          </marker>
+          <marker id="arrowB" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L7,3 L0,6 Z" fill="#c99a00" />
+          </marker>
+        </defs>
+
+        <!-- Sources -->
+        <rect x="10" y="40" width="230" height="150" rx="14" fill="#fffdf5" stroke="#cfe0dd"/>
+        <text x="125" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#5f8a83">DATA SOURCES (Part A)</text>
+        <rect x="28" y="60" width="194" height="52" rx="10" fill="#fff3c9" stroke="#f5cf4d"/>
+        <text x="125" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#013e37">Mock BSE feed</text>
+        <text x="125" y="97" text-anchor="middle" font-size="10" fill="#7a5a00">slow · 30s timeout · ~20% fail</text>
+        <rect x="28" y="120" width="194" height="52" rx="10" fill="#e9f2f0" stroke="#9ec2bc"/>
+        <text x="125" y="140" text-anchor="middle" font-size="13" font-weight="700" fill="#013e37">Internal app</text>
+        <text x="125" y="157" text-anchor="middle" font-size="10" fill="#5f8a83">instant · reliable</text>
+
+        <!-- Worker -->
+        <rect x="330" y="55" width="230" height="120" rx="14" fill="#013e37"/>
+        <text x="445" y="90" text-anchor="middle" font-size="14" font-weight="800" fill="#ffefb3">Sync Worker</text>
+        <text x="445" y="112" text-anchor="middle" font-size="10.5" fill="#cfe0dd">chunk · retry / resume</text>
+        <text x="445" y="128" text-anchor="middle" font-size="10.5" fill="#cfe0dd">idempotent upsert</text>
+        <text x="445" y="144" text-anchor="middle" font-size="10.5" fill="#cfe0dd">watermark · atomic commit</text>
+
+        <!-- DB -->
+        <rect x="330" y="235" width="230" height="90" rx="14" fill="#fffdf5" stroke="#013e37" stroke-width="2"/>
+        <text x="445" y="272" text-anchor="middle" font-size="14" font-weight="800" fill="#013e37">Postgres</text>
+        <text x="445" y="292" text-anchor="middle" font-size="10.5" fill="#5f8a83">our own mirror (via Prisma)</text>
+
+        <!-- Serving -->
+        <rect x="650" y="55" width="230" height="120" rx="14" fill="#fffdf5" stroke="#cfe0dd"/>
+        <text x="765" y="90" text-anchor="middle" font-size="14" font-weight="800" fill="#013e37">Serving API</text>
+        <text x="765" y="112" text-anchor="middle" font-size="10.5" fill="#5f8a83">reads DB only</text>
+        <text x="765" y="128" text-anchor="middle" font-size="10.5" fill="#5f8a83">RBAC-scoped</text>
+        <text x="765" y="144" text-anchor="middle" font-size="10.5" fill="#5f8a83">&lt; 1 second, always</text>
+
+        <!-- Browser -->
+        <rect x="650" y="235" width="230" height="90" rx="14" fill="#fff3c9" stroke="#f5cf4d"/>
+        <text x="765" y="272" text-anchor="middle" font-size="14" font-weight="800" fill="#013e37">Browser (portal)</text>
+        <text x="765" y="292" text-anchor="middle" font-size="10.5" fill="#7a5a00">5 role-based screens</text>
+
+        <!-- arrows -->
+        <line x1="240" y1="115" x2="326" y2="115" stroke="#013e37" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="283" y="107" text-anchor="middle" font-size="9.5" fill="#5f8a83">pull</text>
+        <line x1="445" y1="175" x2="445" y2="231" stroke="#013e37" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="500" y="207" text-anchor="middle" font-size="9.5" fill="#5f8a83">commit</text>
+        <line x1="560" y1="280" x2="765" y2="280" stroke="#013e37" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="765" y1="235" x2="765" y2="177" stroke="#013e37" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="820" y="215" text-anchor="middle" font-size="9.5" fill="#5f8a83">SELECT</text>
+        <line x1="765" y1="55" x2="765" y2="40" stroke="#013e37" stroke-width="0"/>
+        <!-- request/response browser<->api -->
+        <line x1="700" y1="177" x2="700" y2="233" stroke="#013e37" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="628" y="207" text-anchor="middle" font-size="9.5" fill="#5f8a83">HTTP</text>
+        <!-- websocket push worker -> browser -->
+        <path d="M540,150 C610,150 690,190 700,232" fill="none" stroke="#c99a00" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrowB)"/>
+        <text x="628" y="150" text-anchor="middle" font-size="9.5" font-weight="700" fill="#c99a00">live push (WebSocket)</text>
+      </svg>
+
+      <h3>What happens, step by step</h3>
+      <div class="step"><div class="n">1</div><div><b>Ingest continuously.</b> The sync worker pulls BSE in small pages, each finishing well under the 30-second limit. The instant internal endpoints are pulled every cycle.</div></div>
+      <div class="step"><div class="n">2</div><div><b>Survive failures.</b> If a page times out or dies mid-transfer, the worker retries it with backoff and resumes from the last saved position — never from the start, and never committing half a page.</div></div>
+      <div class="step"><div class="n">3</div><div><b>Never duplicate.</b> Rows are keyed by their exchange id and upserted, so retries and overlapping refreshes can't create duplicates or contradictions. The rows and the resume position are saved together in one transaction.</div></div>
+      <div class="step"><div class="n">4</div><div><b>Serve instantly.</b> Screens read only from Postgres — typically 8–48&nbsp;ms — with no path to BSE, so they stay fast even if the feed is offline.</div></div>
+      <div class="step"><div class="n">5</div><div><b>Update live.</b> The moment new rows are committed, the server pushes a WebSocket event and any open screen refreshes itself.</div></div>
+    </div>
+
+    <!-- ─────────────── SETUP ─────────────── -->
+    <div class="section">
+      <h2>3 · Getting started</h2>
+      <p>You need <b>Node.js 20+</b> and <b>Docker</b> (for Postgres). From the project root:</p>
+      <pre>npm install            # install all workspaces
+npm run db:up          # start Postgres (Docker)
+npm run prisma:migrate # create the database schema
+npm run seed           # load roles, features &amp; demo users
+npm run dev            # start mock API + portal server + web UI</pre>
+      <p>Once running, open the portal in your browser:</p>
+      <div class="kpi-row">
+        <div class="kpi"><div class="l">Portal (web)</div><div class="v">localhost:5173</div></div>
+        <div class="kpi"><div class="l">Portal API</div><div class="v">localhost:4002</div></div>
+        <div class="kpi"><div class="l">Mock BSE API</div><div class="v">localhost:4001</div></div>
+      </div>
+      <div class="note"><b>Tip.</b> On first launch the worker begins mirroring BSE. Watch the clients and trades
+        counts in the top bar climb — that is the background ingestion filling your local store.</div>
+    </div>
+
+    <!-- ─────────────── LOGIN ─────────────── -->
+    <div class="section">
+      <h2>4 · Signing in &amp; roles</h2>
+      <p>
+        The sign-in screen lets you type credentials or pick a ready-made demo account. Every demo account uses
+        the password <code>password</code>. Your account's <b>organisation</b> and <b>role</b> decide which
+        screens you see and how much data each screen shows.
+      </p>
+      <figure>
+        <img src="img/01-login.png" alt="Login screen" />
+        <figcaption>The sign-in screen, with one-click demo accounts across two organisations.</figcaption>
+      </figure>
+      <h3>How access is decided</h3>
+      <p>
+        Access is a combination of three things — <b>Organisation × Role × Feature</b> — and each grant carries a
+        <b>scope</b> that narrows the rows you can see:
+      </p>
+      <table>
+        <tr><th>Scope</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td><span class="chip all">ALL</span></td><td>every row</td><td>Management sees all clients &amp; all incentives</td></tr>
+        <tr><td><span class="chip own">OWN</span></td><td>only the signed-in user's own records</td><td>An RM sees only their own incentive</td></tr>
+        <tr><td><span class="chip mapped">MAPPED</span></td><td>only rows tied to the user's mapped clients</td><td>"My Clients" and that RM's trades</td></tr>
+      </table>
+    </div>
+
+    <!-- ─────────────── TOUR ─────────────── -->
+    <div class="section">
+      <h2>5 · The screens — a guided tour</h2>
+
+      <h3>Clients <span class="muted">— feature: clients · scope <span class="chip all">ALL</span></span></h3>
+      <p>All clients with key details: PAN, city, trading segment, KYC status, their relationship manager, and
+        when the account was opened. The badge on the right shows the server response time — proof the screen met
+        the sub-second requirement.</p>
+      <figure>
+        <img src="img/02-manager-clients.png" alt="Clients screen" />
+        <figcaption>Clients — management view. Note the response-time badge and the live data counts in the top bar.</figcaption>
+      </figure>
+
+      <h3>Trades <span class="muted">— feature: trades · filterable by client &amp; date</span></h3>
+      <p>Every trade with symbol, side, quantity, price, value and brokerage. Filter by a specific client id and/or
+        a date range. Management sees all trades; a relationship manager sees only their mapped clients' trades.</p>
+      <figure>
+        <img src="img/03-manager-trades.png" alt="Trades screen" />
+        <figcaption>Trades — with client and date-range filters.</figcaption>
+      </figure>
+
+      <h3>Employees <span class="muted">— feature: employees · scope <span class="chip all">ALL</span></span></h3>
+      <p>Everyone on the platform, their title and department, and how many clients each relationship manager carries.</p>
+      <figure>
+        <img src="img/04-manager-employees.png" alt="Employees screen" />
+        <figcaption>Employees — synced from the internal application.</figcaption>
+      </figure>
+
+      <h3>Incentives <span class="muted">— feature: incentives · <span class="chip all">ALL</span> for management, <span class="chip own">OWN</span> for an RM</span></h3>
+      <p>Incentive = <b>15% of the brokerage</b> on each relationship manager's mapped clients' trades. Management
+        sees every RM with totals up top; an RM sees only their own row.</p>
+      <figure>
+        <img src="img/05-manager-incentives.png" alt="Incentives — management" />
+        <figcaption>Incentives — management sees all relationship managers, ranked, with firm-wide totals.</figcaption>
+      </figure>
+
+      <h3>My Clients &amp; the scoped RM view</h3>
+      <p>A relationship manager signs in to a deliberately smaller portal: no firm-wide Clients, Employees, or
+        Access Control in the sidebar. "My Clients" shows only the clients mapped to them.</p>
+      <figure>
+        <img src="img/06-rm-my-clients.png" alt="My Clients — RM" />
+        <figcaption>My Clients — a relationship manager sees only their mapped book (scope <span class="chip mapped">MAPPED</span>).</figcaption>
+      </figure>
+      <figure>
+        <img src="img/07-rm-incentives-own.png" alt="Incentives — RM own" />
+        <figcaption>Incentives for the same RM — scoped to <span class="chip own">OWN</span>: just their single row.</figcaption>
+      </figure>
+    </div>
+
+    <!-- ─────────────── RBAC ─────────────── -->
+    <div class="section">
+      <h2>6 · Access Control — dynamic RBAC</h2>
+      <p class="lead">
+        Administrators get an <b>Access Control</b> screen: a live matrix of Organisation × Role × Feature. Nothing
+        here is hardcoded — every screen a user sees is resolved from this matrix at request time, so changing a
+        cell changes that role's access on their very next action.
+      </p>
+      <figure>
+        <img src="img/08-admin-access-control.png" alt="Access Control matrix" />
+        <figcaption>Access Control — two organisations with intentionally different matrices. The same "Relationship
+          Manager" role grants different features in Arham vs Zenith, proving the model is data-driven.</figcaption>
+      </figure>
+      <p>Each cell is a dropdown; pick a scope (or "none" to revoke). The change is saved immediately.</p>
+      <figure>
+        <img src="img/09-admin-access-control-dropdown.png" alt="Scope dropdown" />
+        <figcaption>Setting a grant's scope from the dropdown.</figcaption>
+      </figure>
+      <div class="note"><b>Try it.</b> Open the portal as an admin in one tab and as an RM in another. Change the
+        RM role's <i>Trades</i> grant to "none", then navigate in the RM's tab — the Trades screen disappears.</div>
+    </div>
+
+    <!-- ─────────────── RESILIENCE ─────────────── -->
+    <div class="section">
+      <h2>7 · Staying fast &amp; live under a failing feed</h2>
+      <h3>Always under a second, even if BSE is down</h3>
+      <p>Because screens read only from our own store, they never wait on the exchange. You can stop the Mock BSE
+        API entirely and the portal keeps serving every screen instantly — it simply stops receiving new data until
+        the feed returns. The response-time badge on each screen makes this visible.</p>
+
+      <h3>Live updates without refreshing</h3>
+      <p>Use the <b>“+ Simulate BSE trades”</b> button in the top bar to inject fresh trades into the mock feed.
+        On the next sync cycle the worker ingests them and pushes a WebSocket event; the Trades and Incentives
+        screens update on their own. The <b>Live</b> indicator and the counts in the top bar reflect the flow.</p>
+
+      <h3>Correct under failure</h3>
+      <ul>
+        <li><b>Timeouts</b> — each pull is abandoned at 30s and retried, never left hanging.</li>
+        <li><b>Mid-pull failures</b> — a page that dies partway is retried and resumed from the last saved position.</li>
+        <li><b>Duplicates</b> — rows are keyed by exchange id and upserted, so retries and overlapping pulls are harmless.</li>
+        <li><b>Overlapping refreshes</b> — cycles never overlap, and incremental pulls use a high-water mark so re-reading the boundary is safe.</li>
+      </ul>
+      <div class="note"><b>Behind the scenes.</b> In the server log you'll see the story play out:
+        <code>✗ mid-pull failure</code> → <code>↻ retry</code> → <code>✓ synced</code>. That is the resilience
+        working as designed, not an error.</div>
+    </div>
+
+    <!-- ─────────────── REFERENCE ─────────────── -->
+    <div class="section">
+      <h2>8 · Reference</h2>
+      <h3>Demo accounts <span class="muted">(password: <code>password</code>)</span></h3>
+      <table>
+        <tr><th>Email</th><th>Organisation</th><th>Role</th><th>Sees</th></tr>
+        <tr><td>admin@arham.test</td><td>Arham Fintech</td><td>Administrator</td><td>everything, incl. Access Control</td></tr>
+        <tr><td>manager@arham.test</td><td>Arham Fintech</td><td>Management</td><td>Clients, Trades, Employees, Incentives (all)</td></tr>
+        <tr><td>rm1@arham.test</td><td>Arham Fintech</td><td>Relationship Manager</td><td>My Clients, own Trades, own Incentive</td></tr>
+        <tr><td>rm2@arham.test</td><td>Arham Fintech</td><td>Relationship Manager</td><td>a different mapped book</td></tr>
+        <tr><td>admin@zenith.test</td><td>Zenith Securities</td><td>Administrator</td><td>everything</td></tr>
+        <tr><td>compliance@zenith.test</td><td>Zenith Securities</td><td>Compliance Officer</td><td>Clients, Trades, Employees (no incentives)</td></tr>
+        <tr><td>rm@zenith.test</td><td>Zenith Securities</td><td>Relationship Manager</td><td>My Clients + own Incentive (no Trades screen)</td></tr>
+      </table>
+
+      <h3>Ports</h3>
+      <table>
+        <tr><th>Service</th><th>URL</th></tr>
+        <tr><td>Internal Dashboard (web)</td><td>http://localhost:5173</td></tr>
+        <tr><td>Portal API (+ WebSocket at /ws)</td><td>http://localhost:4002</td></tr>
+        <tr><td>Mock BSE API</td><td>http://localhost:4001</td></tr>
+        <tr><td>Postgres</td><td>localhost:5433</td></tr>
+      </table>
+
+      <h3>Useful configuration</h3>
+      <table>
+        <tr><th>Setting</th><th>Effect</th></tr>
+        <tr><td><code>MOCK_BSE_DELAY_MS</code></td><td>per-page delay of the mock feed (set high to simulate the 10-minute pull)</td></tr>
+        <tr><td><code>MOCK_BSE_FAILURE_RATE</code></td><td>probability a page fails mid-pull (default 0.2)</td></tr>
+        <tr><td><code>SYNC_INTERVAL_MS</code></td><td>how often the worker runs a sync cycle</td></tr>
+        <tr><td><code>INCENTIVE_RATE</code></td><td>RM share of brokerage (default 0.15)</td></tr>
+      </table>
+
+      <p class="muted" style="margin-top:20px; text-align:center;">
+        BSE Portal · Part A (Mock BSE API) + Part B (Internal Portal) · React · TypeScript · Prisma · PostgreSQL
+      </p>
+    </div>
+  </body>
+</html>

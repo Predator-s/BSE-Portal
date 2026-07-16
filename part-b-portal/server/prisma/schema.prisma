@@ -1,0 +1,152 @@
+// BSE Portal — Part B data model
+//
+// Three concerns live here:
+//   1. Dynamic RBAC        → Organization / Role / Feature / RoleFeature / User
+//   2. Synced business data → Employee / Client / Trade  (mirrored FROM the mock BSE + internal app)
+//   3. Sync bookkeeping     → SyncState  (watermark + resume cursor per resource)
+//
+// Business rows use the EXTERNAL id (EMP01, CL000001, TRD00000001) as their primary key,
+// which makes ingestion an idempotent upsert-by-id — retries and overlapping pulls can
+// never create duplicates.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── 1. Dynamic RBAC (Org + Role + Feature) ───────────────────────────────────
+
+// Scope narrows WHAT rows a feature can see, on top of WHETHER it is visible.
+enum Scope {
+  ALL // every row (management)
+  OWN // only rows belonging to this user (e.g. their own incentives)
+  MAPPED // only rows tied to clients mapped to this user's employee
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  roles     Role[]
+  users     User[]
+  createdAt DateTime @default(now())
+}
+
+// A feature = one screen/capability in the portal. Data-driven, not hardcoded.
+model Feature {
+  id           String        @id @default(cuid())
+  key          String        @unique // clients | trades | my_clients | employees | incentives | access_control
+  name         String
+  description  String?
+  sortOrder    Int           @default(0)
+  roleFeatures RoleFeature[]
+}
+
+model Role {
+  id           String        @id @default(cuid())
+  orgId        String
+  key          String // admin | manager | rm
+  name         String
+  org          Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  users        User[]
+  roleFeatures RoleFeature[]
+
+  @@unique([orgId, key])
+}
+
+// The matrix row: (role → feature) granted at a given scope. Fully editable at runtime.
+model RoleFeature {
+  id        String  @id @default(cuid())
+  roleId    String
+  featureId String
+  scope     Scope   @default(ALL)
+  role      Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  feature   Feature @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, featureId])
+}
+
+model User {
+  id         String       @id @default(cuid())
+  orgId      String
+  roleId     String
+  // Soft link to Employee.id (EMP01…) for OWN/MAPPED scoping. Intentionally NOT a
+  // FK: employees are owned by the external source and synced in later, so the
+  // RBAC seed must not depend on them existing yet.
+  employeeId String?
+  name       String
+  email      String       @unique
+  password   String // bcrypt hash (demo credentials)
+  org        Organization @relation(fields: [orgId], references: [id])
+  role       Role         @relation(fields: [roleId], references: [id])
+  createdAt  DateTime     @default(now())
+}
+
+// ── 2. Synced business data (mirror of the BSE + internal sources) ────────────
+
+model Employee {
+  id         String   @id // external id, e.g. EMP01
+  name       String
+  email      String
+  title      String
+  department String
+  clients    Client[] @relation("rm")
+  updatedAt  DateTime @updatedAt
+}
+
+model Client {
+  id        String   @id // external id, e.g. CL000001
+  name      String
+  pan       String
+  email     String
+  city      String
+  segment   String
+  kycStatus String
+  openedAt  DateTime
+  rmId      String? // mapped Relationship Manager (Employee.id)
+  rm        Employee? @relation("rm", fields: [rmId], references: [id])
+  trades    Trade[]
+  updatedAt DateTime @updatedAt
+
+  @@index([rmId])
+}
+
+model Trade {
+  id         String   @id // external id, e.g. TRD00000001
+  clientId   String
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  symbol     String
+  side       String
+  quantity   Int
+  price      Float
+  tradeValue Float
+  brokerage  Float
+  exchange   String
+  tradedAt   DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([clientId])
+  @@index([tradedAt])
+}
+
+// ── 3. Sync bookkeeping ───────────────────────────────────────────────────────
+
+model SyncState {
+  id            String    @id // "internal" | "clients" | "trades"
+  status        String    @default("idle") // idle | running | success | failed
+  cursor        Int       @default(0) // resume offset within the current window
+  windowFrom    DateTime? // 'from' filter for the current trades cycle (keeps cursor valid on resume)
+  watermark     DateTime? // max tradedAt successfully ingested (incremental high-water mark)
+  total         Int? // last known total for the current window
+  processed     Int       @default(0) // rows ingested this window
+  attempts      Int       @default(0) // retry attempts on the current page
+  pages         Int       @default(0) // successful pages this window
+  lastRunAt     DateTime?
+  lastSuccessAt DateTime?
+  lastError     String?
+  updatedAt     DateTime  @updatedAt
+}

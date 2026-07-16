@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bse-portal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bse
+      POSTGRES_PASSWORD: bse
+      POSTGRES_DB: bse_portal
+    ports:
+      - "5433:5432"
+    volumes:
+      - bse_portal_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bse -d bse_portal"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bse_portal_pgdata:

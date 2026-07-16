@@ -1,0 +1,26 @@
+{
+  "name": "bse-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BSE Portal — Mock BSE API (Part A) + Internal Operations Portal (Part B)",
+  "workspaces": [
+    "part-a-mock-bse",
+    "part-b-portal/server",
+    "part-b-portal/web"
+  ],
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "install:all": "npm install",
+    "prisma:generate": "npm --workspace part-b-portal/server run prisma:generate",
+    "prisma:migrate": "npm --workspace part-b-portal/server run prisma:migrate",
+    "seed": "npm --workspace part-b-portal/server run seed",
+    "dev:mock": "npm --workspace part-a-mock-bse run dev",
+    "dev:server": "npm --workspace part-b-portal/server run dev",
+    "dev:web": "npm --workspace part-b-portal/web run dev",
+    "dev": "concurrently -n mock,server,web -c yellow,green,cyan \"npm run dev:mock\" \"npm run dev:server\" \"npm run dev:web\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
