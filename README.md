@@ -113,5 +113,4 @@ far, and fills in live as pages land — the slow pull never blocks a single scr
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — diagram + reasoning (the one-pager)
 - [`docs/SCALING-100x.md`](docs/SCALING-100x.md) — 100× data volume
-- [`docs/DEMO.md`](docs/DEMO.md) — walkthrough / video script
 - [`part-a-mock-bse/README.md`](part-a-mock-bse/README.md), [`part-b-portal/server/README.md`](part-b-portal/server/README.md)
