@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'node:http';
 import { env } from './env.js';
+import { waitForDatabase } from './prisma.js';
 import { authMiddleware } from './auth.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { dataRoutes } from './routes/data.routes.js';
@@ -30,10 +31,20 @@ app.use('/api', api);
 const server = createServer(app);
 attachWebSocket(server);
 
-server.listen(env.port, () => {
-  console.log(`\n🏛️  BSE Portal server on http://localhost:${env.port}`);
-  console.log(`   Serving reads from Postgres only — screens never wait on BSE.`);
-  console.log(`   Mock BSE source: ${env.mockBaseUrl}\n`);
-  // Kick off the background ingestion loop. Serving is fully independent of it.
-  startWorker();
+// Wait for Postgres before binding the port, so the server never starts up in a
+// broken state when the DB is still warming up (e.g. right after `npm run dev`).
+async function bootstrap(): Promise<void> {
+  await waitForDatabase();
+  server.listen(env.port, () => {
+    console.log(`\n🏛️  BSE Portal server on http://localhost:${env.port}`);
+    console.log(`   Serving reads from Postgres only — screens never wait on BSE.`);
+    console.log(`   Mock BSE source: ${env.mockBaseUrl}\n`);
+    // Kick off the background ingestion loop. Serving is fully independent of it.
+    startWorker();
+  });
+}
+
+bootstrap().catch((err) => {
+  console.error(`✗ failed to start server: ${(err as Error).message}`);
+  process.exit(1);
 });
